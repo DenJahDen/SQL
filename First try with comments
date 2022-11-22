@@ -1,0 +1,134 @@
+CREATE TABLE Hotels
+(
+	HotelId int IDENTITY NOT NULL PRIMARY KEY,
+	HotelName varchar(20) NOT NULL,
+	StarsCount int NOT NULL,
+	CreationYear int NOT NULL,
+	Adress varchar(60)
+)
+
+CREATE TABLE Rooms
+(
+	RoomId int IDENTITY NOT NULL PRIMARY KEY,
+	RoomNumber int NOT NULL,
+	HotelId int NOT NULL FOREIGN KEY REFERENCES Hotels(HotelId)
+)
+
+CREATE TABLE Clients
+(
+	ClientId int IDENTITY NOT NULL PRIMARY KEY,
+	ClientName varchar (20) NOT NULL,
+	Email varchar (20),
+	Age int NOT NULL
+)
+
+SELECT TOP (1000) [HotelId]
+      ,[HotelName]
+      ,[StarsCount]
+      ,[CreationYear]
+      ,[Adress]
+  FROM [HotelDB].[dbo].[Hotels]
+
+  SELECT TOP (1000) [RoomId]
+      ,[RoomNumber]
+      ,[HotelId]
+  FROM [HotelDB].[dbo].[Rooms]
+
+SELECT TOP (1000) [ClientId]
+      ,[ClientName]
+      ,[Email]
+      ,[Age]
+  FROM [HotelDB].[dbo].[Clients]
+
+  INSERT INTO Clients (ClientName, Email, Age) VALUES
+  ('Denis','moroz@moroz.ru', 28),
+  ('Julya', 'email@email.ru', 28),
+  ('Dimon', 'dimon@dimon.ru', 20)
+
+  SELECT ClientId, ClientName, Email, Age FROM Clients
+  SELECT * FROM Clients
+  SELECT ClientId, ClientName, Email, Age FROM Clients WHERE Age = 28
+  SELECT ClientId, ClientName, Age FROM Clients
+  SELECT * FROM Clients WHERE ClientName = 'Denis'
+  SELECT * FROM Clients WHERE ClientName LIKE 'D%'
+  SELECT * FROM Clients WHERE ClientName LIKE '%is'
+  SELECT * FROM Clients WHERE ClientName LIKE '%en%'
+  SELECT * FROM Clients WHERE Email LIKE '%@%'
+  SELECT * FROM Clients WHERE ClientName LIKE 'De_is'
+  SELECT COUNT (Age) From Clients WHERE Age = 28
+  SELECT COUNT (Age) as AgeCount From Clients WHERE Age = 28
+  SELECT SUM (Age) as SumAge From Clients WHERE ClientName LIKE '%d%'
+  SELECT AVG (Age) as AverageAge From Clients
+  SELECT MAX (Age) as MaxAge From Clients
+  SELECT MIN (Age) as MaxAge From Clients
+
+  INSERT INTO Hotels (HotelName, StarsCount, CreationYear, Adress) VALUES
+  ('Boloxona', 4, 2022, 'Tashkent, Shirin 35A'),
+  ('Pamir', 3, 2022, 'Dushanbe Shestopalov st.')
+
+  INSERT INTO Rooms (RoomNumber, HotelId) VALUES
+  (100, 1),
+  (101, 1),
+  (102, 1),
+  (103, 1),
+  (104, 1),
+  (1, 2),
+  (2, 2),
+  (3, 2),
+  (4, 2),
+  (5, 2)
+
+  UPDATE HOTELS SET CREATIONYEAR = 2010 WHERE HotelId = 1
+
+  UPDATE HOTELS SET StarsCount = 4, CreationYear = 2012 WHERE HotelId = 2
+
+  DELETE FROM Hotels WHERE HotelId = 1
+
+  DROP TABLE Hotels
+
+  CREATE TABLE Orders
+  (
+	OrderId int IDENTITY NOT NULL PRIMARY KEY,
+	ClientId int NOT NULL FOREIGN KEY REFERENCES Clients(ClientId),
+	RoomId int NOT NULL FOREIGN KEY REFERENCES Rooms(RoomId),
+	Price int NOT NULL,
+	DayCount int NOT NULL
+	)
+
+INSERT INTO Orders (ClientId, RoomId, Price, DayCount) VALUES
+	(1,1, 1226, 5),
+	(2,3,662, 3),
+	(3,2,888,4),
+	(2,4,1999,12),
+	(1,6,99,1),
+	(2,7,502,1),
+	(3,5,6400,12),
+	(2,9,2788,5),
+	(1,8,600,2),
+	(2,10,999,3)
+
+SELECT * FROM Orders
+
+SELECT Price, COUNT(Price) FROM Orders GROUP BY Price
+
+SELECT DayCount, COUNT(DayCount) as Quantity FROM Orders GROUP BY DayCount
+
+
+									"SELECT * FROM * GROUP BY - WHERE -не сипользуется, вместо него с GROUP BY используется HAVING"
+
+
+SELECT Age, COUNT(Age) as Old_visitors FROM Clients GROUP BY Age HAVING Age>25
+
+SELECT Age, COUNT(Age) as Young_visitors FROM Clients GROUP BY Age HAVING Age<25
+
+									"ORDER BY сортирует строки от меньшего к большему, добавление DESC делает сортировку наоборот от большего к меньшему"
+
+SELECT * FROM Orders ORDER BY Price
+SELECT * FROM Orders ORDER BY Price DESC
+
+									"Объединение таблиц с приязкой к совметным PRIMARY и FOREIGN ключами"
+									"RIGHT JOIN показывает всю информацию из правой части, а из левой только связанную"
+									"LEFT JOIN показывает всю информацию из левой части, а из правой только связанную"
+									"FULL JOIN показывает всю информацию из обеих таблиц"
+
+SELECT * FROM Orders Join Clients on Clients.ClientId = Orders.ClientId
